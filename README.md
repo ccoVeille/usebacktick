@@ -114,11 +114,26 @@ The project currently requires Go 1.26.4 or newer.
 
 ## Usage
 
+When the analyzer reports a finding, editors and analysis tools that support Go suggested fixes can apply the conversion automatically.
+
+The analyzer can also be used by tools that support Go analyzers, including
+`go vet`, `golangci-lint`, and compatible editor integrations.
+
+### CLI
+
 Run the analyzer directly against packages:
 
 ```console
 usebacktick ./...
 ```
+
+Use `-fix` to fix all issues.
+
+```console
+usebacktick -fix ./...
+```
+
+### go vet
 
 To run it through `go vet`:
 
@@ -126,10 +141,68 @@ To run it through `go vet`:
 go vet -vettool="$(which usebacktick)" ./...
 ```
 
-When the analyzer reports a finding, editors and analysis tools that support Go suggested fixes can apply the conversion automatically.
+```console
+go vet -vettool="$(which usebacktick)" -fix ./...
+```
 
-The analyzer can also be used by tools that support Go analyzers, including
-`go vet` and compatible editor integrations.
+Use `-fix` to fix all issues.
+
+### golangci-lint plugin
+
+`usebacktick` can also be used as a [golangci-lint](https://golangci-lint.run/) module plugin, built into a custom `golangci-lint` binary via [`golangci-lint custom`](https://golangci-lint.run/plugins/module-plugins/).
+
+Add a `.custom-gcl.yml` file listing the plugin:
+
+```yaml
+version: v2.13.2
+plugins:
+  - module: 'github.com/ccoveille/usebacktick'
+    import: 'github.com/ccoveille/usebacktick/golangci'
+    version: v0.2.0
+```
+
+Update `version` (the `golangci-lint` version) and the plugin's `version` to the latest
+available releases before building, since `golangci-lint custom` pins exact versions
+and does not resolve them automatically.
+
+Then build the custom binary:
+
+```console
+golangci-lint custom
+```
+
+This produces a `custom-gcl` binary in the current directory, which behaves like `golangci-lint` with `usebacktick` included.
+
+Finally, declare the linter in your `golangci-lint` YAML configuration file:
+
+```yaml
+version: "2"
+
+# ...
+
+linters:
+  settings:
+
+    # ...
+
+    custom:
+      usebacktick:
+        type: module
+        description: Linter for using backticks instead of double quotes where possible
+        original-url: https://github.com/ccoVeille/usebacktick
+```
+
+Then use `custom-gcl` as a `golangci-lint` replacement:
+
+```console
+./custom-gcl lint --enable-only usebacktick ./...
+```
+
+Use `-fix` to fix detected issues.
+
+```console
+./custom-gcl lint --enable-only usebacktick -fix ./...
+```
 
 ## Development
 
