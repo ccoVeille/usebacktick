@@ -1,0 +1,21 @@
+package a
+
+import (
+	re "regexp"
+)
+
+type regexpWrapper struct{}
+
+func (regexpWrapper) Compile(pattern string) error {
+	return nil
+}
+
+// regexpCompile is already reported with staticcheck
+// https://staticcheck.dev/docs/checks/#S1007
+func regexpCompileWithAlias() {
+	_, _ = re.Compile("foo\\d+bar")
+	_ = re.MustCompile("foo\\d+bar")
+
+	re := regexpWrapper{}
+	_ = re.Compile("foo\\d+bar") // want `raw string literal could improve readability`
+}

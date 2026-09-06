@@ -55,3 +55,8 @@ func regexpCompile() {
 	_, _ = regexp.Compile("foo\\d+bar")
 	_ = regexp.MustCompile("foo\\d+bar")
 }
+
+func regexpCompileShadowed() {
+	regexp := regexpWrapper{}
+	_ = regexp.Compile("foo\\d+bar") // want `raw string literal could improve readability`
+}
