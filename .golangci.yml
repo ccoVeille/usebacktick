@@ -1,0 +1,73 @@
+---
+version: "2"
+
+formatters:
+  enable:
+    - gofmt
+    - goimports
+    - gci
+
+  settings:
+    # format the code with the Go standard library
+    gofmt:
+      # simplify the code
+      # https://pkg.go.dev/cmd/gofmt#hdr-The_simplify_command
+      simplify: true
+      rewrite-rules:
+        # replace `interface{}` with `any` in the code on format
+        - pattern: 'interface{}'
+          replacement: 'any'
+
+    # make sure imports are always in a deterministic order
+    # https://github.com/daixiang0/gci/
+    gci:  # define the section orders for imports
+      sections:
+        # Standard section: captures all standard packages.
+        - standard
+        # Default section: catchall that is not standard or custom
+        - default
+        # linters that related to local tool, so they should be separated
+        - localmodule
+
+linters:
+  # some linters are enabled by default
+  # https://golangci-lint.run/docs/linters/
+  #
+  # enable some extra linters
+  enable:
+    - dupword
+    - errcheck
+    - exptostd
+    - gocritic
+    - govet
+    - ineffassign
+    - loggercheck
+    - mirror
+    - misspell
+    - revive
+    - staticcheck
+    - thelper
+    - unused
+    - usestdlibvars
+    - usetesting
+
+  settings:
+    revive:
+      enable-all-rules: true
+      rules:
+        - name: exported
+          arguments:
+            # make error messages clearer
+            - "sayRepetitiveInsteadOfStutters"
+
+        - name: add-constant
+          disabled: true
+
+        - name: line-length-limit
+          disabled: true
+
+        - name: cognitive-complexity
+          disabled: true
+
+    misspell:
+      locale: US

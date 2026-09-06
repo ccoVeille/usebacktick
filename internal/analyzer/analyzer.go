@@ -1,3 +1,5 @@
+// Package analyzer implements a static analysis tool that suggests using raw string literals (backticks)
+// instead of quoted string literals when it improves readability and does not change the meaning of the string.
 package analyzer
 
 import (
@@ -56,7 +58,8 @@ func quotedStringLiteralValue(n ast.Node) (*ast.BasicLit, bool) {
 	return lit, false
 }
 
-func Run(pass *analysis.Pass) (interface{}, error) {
+// Run is the entry point for the analyzer.
+func Run(pass *analysis.Pass) (any, error) {
 	for _, file := range pass.Files {
 		ast.Inspect(file, func(n ast.Node) bool {
 			if isRegexpCompileCall(pass, n) {

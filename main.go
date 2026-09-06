@@ -1,3 +1,4 @@
+// Package main provides the CLI entry point for the usebacktick analyzer.
 package main
 
 import (
