@@ -34,7 +34,7 @@ func stable() {
 	// cannot use backticks as the string contains a backtick
 	_ = "foo`bar"
 
-	// using backticks is not possible as the string contains new line characters
+	// using new lines in a raw string literal would not improve readability
 	_ = "foo\nbar"
 }
 
