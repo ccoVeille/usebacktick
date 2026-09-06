@@ -8,7 +8,7 @@ This linter is not only about style, but also about readability and maintainabil
 
 It is built with Go's `go/analysis` framework and can run standalone or as a `go vet` tool.
 
-Source code: <https://github.com/ccoveille/usebacktick>
+Source code: <https://github.com/ccoVeille/usebacktick>
 
 ## Example
 
@@ -38,24 +38,13 @@ The analyzer suggests backticks when all of the following are true:
 
 It does not suggest conversions when:
 
-- the string contains a newline or backtick.
-
-     Raw string literals can contain newlines, but this analyzer does not suggest
-     them because control characters are not considered readable in this context.
-     Backticks cannot appear inside raw string literals.
-
-    ```go
-     message = "\n"
-     message = "`"
-    ```
-
 - the string contains a tab escape (`\t`):
 
     Even though raw string literals can represent tabs directly
 
     ```go
     message = "foo\tbar"   // the tabulation is escaped via the \t
-    message = `foo    bar` // the tabulation is not visible
+    message = `foo  bar` // the tabulation is not visible
     ```
 
 - the original literal uses an explicit Unicode representation:
@@ -98,6 +87,21 @@ It does not suggest conversions when:
     ```go
     _ = regexp.MustCompile("\t")
     _ = regexp.MustCompile(`\t`)
+    ```
+
+- the string contains a newline or backtick:
+     
+    Raw string literals can contain newlines, but this analyzer does not suggest introducing
+    literal newlines because they are typically not readable in this context.
+    
+    Backticks cannot appear inside raw string literals.
+    See: <https://go.dev/ref/spec#String_literals>
+    
+    For example:
+
+    ```go
+    message = "\n"
+    message = "`"
     ```
 
 ## Installation
