@@ -11,6 +11,55 @@ import (
 	"golang.org/x/tools/go/analysis"
 )
 
+// Analyzer defines the linter configuration for the go/analysis framework.
+var Analyzer = &analysis.Analyzer{
+	Name: "usebacktick",
+	URL:  "https://github.com/ccoVeille/usebacktick",
+	Doc:  "reports string literals that can be simplified with raw string literals (backticks).",
+
+	Run: func(pass *analysis.Pass) (any, error) {
+		for _, file := range pass.Files {
+			ast.Inspect(file, func(n ast.Node) bool {
+				if isRegexpCompileCall(pass, n) {
+					// ignore all arguments to the regexp function.
+					return false
+				}
+
+				lit, skip := quotedStringLiteralValue(n)
+				if skip {
+					return true
+				}
+
+				newLitValue, replaced := useBackticks(lit.Value)
+				if !replaced {
+					return true
+				}
+
+				pass.Report(analysis.Diagnostic{
+					Pos:     lit.Pos(),
+					Message: "raw string literal could improve readability",
+					URL:     "https://github.com/ccoVeille/usebacktick",
+					SuggestedFixes: []analysis.SuggestedFix{
+						{
+							Message: "replace with raw string literal",
+							TextEdits: []analysis.TextEdit{
+								{
+									Pos:     lit.Pos(),
+									End:     lit.End(),
+									NewText: []byte(newLitValue),
+								},
+							},
+						},
+					},
+				})
+
+				return true
+			})
+		}
+		return nil, nil
+	},
+}
+
 func isRegexpCompileCall(pass *analysis.Pass, n ast.Node) bool {
 	call, ok := n.(*ast.CallExpr)
 	if !ok {
@@ -56,49 +105,6 @@ func quotedStringLiteralValue(n ast.Node) (*ast.BasicLit, bool) {
 	}
 
 	return lit, false
-}
-
-// Run is the entry point for the analyzer.
-func Run(pass *analysis.Pass) (any, error) {
-	for _, file := range pass.Files {
-		ast.Inspect(file, func(n ast.Node) bool {
-			if isRegexpCompileCall(pass, n) {
-				// ignore all arguments to the regexp function.
-				return false
-			}
-
-			lit, skip := quotedStringLiteralValue(n)
-			if skip {
-				return true
-			}
-
-			newLitValue, replaced := useBackticks(lit.Value)
-			if !replaced {
-				return true
-			}
-
-			pass.Report(analysis.Diagnostic{
-				Pos:     lit.Pos(),
-				Message: "raw string literal could improve readability",
-				URL:     "https://github.com/ccoVeille/usebacktick",
-				SuggestedFixes: []analysis.SuggestedFix{
-					{
-						Message: "replace with raw string literal",
-						TextEdits: []analysis.TextEdit{
-							{
-								Pos:     lit.Pos(),
-								End:     lit.End(),
-								NewText: []byte(newLitValue),
-							},
-						},
-					},
-				},
-			})
-
-			return true
-		})
-	}
-	return nil, nil
 }
 
 // useBackticks checks if a raw string literal (backticks) can and should be suggested for litValue.
