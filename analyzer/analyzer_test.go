@@ -5,6 +5,8 @@ import (
 	"go/parser"
 	"go/token"
 	"testing"
+
+	"golang.org/x/tools/go/analysis/analysistest"
 )
 
 func TestUseBackticks(t *testing.T) {
@@ -101,4 +103,9 @@ func f() {
 	if lits[0].Value != `"double"` {
 		t.Fatalf("got literal %q, want %q", lits[0].Value, `"double"`)
 	}
+}
+
+func TestAnalyzer(t *testing.T) {
+	testdata := analysistest.TestData()
+	analysistest.RunWithSuggestedFixes(t, testdata, Analyzer, "a")
 }
