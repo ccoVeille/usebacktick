@@ -45,6 +45,7 @@ linters:
     - loggercheck
     - mirror
     - misspell
+    - nilnil
     - nolintlint
     - revive
     - staticcheck
@@ -58,6 +59,7 @@ linters:
     nolintlint:
       require-explanation: true
       require-specific: true
+      allow-unused: true # nilnil can be flaky
     revive:
       enable-all-rules: true
       rules:

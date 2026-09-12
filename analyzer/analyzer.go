@@ -60,6 +60,7 @@ func New(settings any) *analysis.Analyzer {
 				})
 			}
 
+			//nolint:nilnil // We don't need other analyzer to consume results from this analyzer
 			return nil, nil
 		},
 	}
