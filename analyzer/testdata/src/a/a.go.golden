@@ -9,17 +9,17 @@ import (
 func target() {
 	// strings that could be simplified
 
-	_ = `foo"bar` // want `raw string literal could improve readability`
-	_ = `foo\bar` // want `raw string literal could improve readability`
+	_ = `foo"bar` // want `use raw string literal`
+	_ = `foo\bar` // want `use raw string literal`
 
 	_ = strings.Contains(
 		"ab",
-		`\n`, // want `raw string literal could improve readability`
+		`\n`, // want `use raw string literal`
 	)
 
 	var dest any
 	_ = json.Unmarshal(
-		[]byte(`{foo: "bar"}`), // want `raw string literal could improve readability`
+		[]byte(`{foo: "bar"}`), // want `use raw string literal`
 		&dest,
 	)
 }

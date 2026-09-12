@@ -37,7 +37,7 @@ var Analyzer = &analysis.Analyzer{
 
 				pass.Report(analysis.Diagnostic{
 					Pos:     lit.Pos(),
-					Message: "raw string literal could improve readability",
+					Message: "use raw string literal",
 					URL:     "https://github.com/ccoVeille/usebacktick",
 					SuggestedFixes: []analysis.SuggestedFix{
 						{
