@@ -25,7 +25,7 @@ var _ register.LinterPlugin = new(usebacktickPlugin)
 
 // BuildAnalyzers returns the analyzers to be run by golangci-lint.
 //
-// This method is part of the [register.LinterPlugin]
+// This method is part of the [register.LinterPlugin].
 func (p usebacktickPlugin) BuildAnalyzers() ([]*analysis.Analyzer, error) {
 	return []*analysis.Analyzer{
 		analyzer.New(p.settings),
@@ -34,7 +34,7 @@ func (p usebacktickPlugin) BuildAnalyzers() ([]*analysis.Analyzer, error) {
 
 // GetLoadMode returns the load mode for the analyzers to be run by golangci-lint.
 //
-// This method is part of the [register.LinterPlugin]
+// This method is part of the [register.LinterPlugin].
 func (usebacktickPlugin) GetLoadMode() string {
 	return register.LoadModeTypesInfo
 }
