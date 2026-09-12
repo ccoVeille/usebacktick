@@ -10,21 +10,25 @@ import (
 
 //nolint:gochecknoinits // init needed for plugin
 func init() {
-	register.Plugin("usebacktick", func(_ any) (register.LinterPlugin, error) {
-		return &usebacktickPlugin{}, nil
+	register.Plugin("usebacktick", func(settings any) (register.LinterPlugin, error) {
+		return &usebacktickPlugin{
+			settings: settings,
+		}, nil
 	})
 }
 
-type usebacktickPlugin struct{}
+type usebacktickPlugin struct {
+	settings any
+}
 
 var _ register.LinterPlugin = new(usebacktickPlugin)
 
 // BuildAnalyzers returns the analyzers to be run by golangci-lint.
 //
 // This method is part of the [register.LinterPlugin]
-func (usebacktickPlugin) BuildAnalyzers() ([]*analysis.Analyzer, error) {
+func (p usebacktickPlugin) BuildAnalyzers() ([]*analysis.Analyzer, error) {
 	return []*analysis.Analyzer{
-		analyzer.Analyzer,
+		analyzer.New(p.settings),
 	}, nil
 }
 

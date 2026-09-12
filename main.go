@@ -8,5 +8,6 @@ import (
 )
 
 func main() {
-	singlechecker.Main(analyzer.Analyzer)
+	var settings any // TODO: add support for settings
+	singlechecker.Main(analyzer.New(settings))
 }
