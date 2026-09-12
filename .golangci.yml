@@ -39,6 +39,7 @@ linters:
     - errcheck
     - exptostd
     - gocritic
+    - godot
     - govet
     - ineffassign
     - loggercheck
