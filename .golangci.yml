@@ -35,14 +35,19 @@ linters:
   #
   # enable some extra linters
   enable:
+    - decorder
     - dupword
+    - embeddedstructfieldcheck
     - errcheck
     - exptostd
+    - funcorder
+    - gochecknoglobals
+    - gochecknoinits
     - gocritic
     - godot
+    - gosec
     - govet
     - ineffassign
-    - loggercheck
     - mirror
     - misspell
     - nilnil
@@ -50,12 +55,19 @@ linters:
     - revive
     - staticcheck
     - thelper
+    - unconvert
+    - unparam
     - unused
     - usestdlibvars
     - usetesting
     - wsl_v5
 
   settings:
+    govet:
+      enable-all: true
+      disable:
+        - fieldalignment
+        - shadow
     nolintlint:
       require-explanation: true
       require-specific: true
