@@ -107,5 +107,5 @@ func f() {
 
 func TestAnalyzer(t *testing.T) {
 	testdata := analysistest.TestData()
-	analysistest.RunWithSuggestedFixes(t, testdata, Analyzer, "a")
+	analysistest.RunWithSuggestedFixes(t, testdata, New(nil), "a")
 }
