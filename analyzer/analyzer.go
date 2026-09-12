@@ -59,6 +59,7 @@ func New(settings any) *analysis.Analyzer {
 					return true
 				})
 			}
+
 			return nil, nil
 		},
 	}
@@ -74,6 +75,7 @@ func isRegexpCompileCall(pass *analysis.Pass, n ast.Node) bool {
 	if !ok {
 		return false
 	}
+
 	if sel.Sel == nil { // This should not happen, unless the language spec changes, but let's be safe.
 		return false
 	}
@@ -82,10 +84,12 @@ func isRegexpCompileCall(pass *analysis.Pass, n ast.Node) bool {
 	if obj == nil {
 		return false
 	}
+
 	pkg := obj.Pkg()
 	if pkg == nil {
 		return false
 	}
+
 	if pkg.Path() != "regexp" {
 		return false
 	}

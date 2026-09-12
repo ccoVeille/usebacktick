@@ -66,6 +66,7 @@ func TestUseBackticks(t *testing.T) {
 			if ok != tt.wantOK {
 				t.Fatalf("useBackticks(%q) ok = %v, want %v", tt.litValue, ok, tt.wantOK)
 			}
+
 			if ok && got != tt.want {
 				t.Fatalf("useBackticks(%q) = %q, want %q", tt.litValue, got, tt.want)
 			}
@@ -82,24 +83,29 @@ func f() {
 	_ = 42
 }
 `
+
 	fset := token.NewFileSet()
+
 	file, err := parser.ParseFile(fset, "p.go", src, 0)
 	if err != nil {
 		t.Fatalf("ParseFile: %v", err)
 	}
 
 	var lits []*ast.BasicLit
+
 	ast.Inspect(file, func(n ast.Node) bool {
 		lit, skip := quotedStringLiteralValue(n)
 		if !skip {
 			lits = append(lits, lit)
 		}
+
 		return true
 	})
 
 	if len(lits) != 1 {
 		t.Fatalf("got %d double-quoted string literals, want 1", len(lits))
 	}
+
 	if lits[0].Value != `"double"` {
 		t.Fatalf("got literal %q, want %q", lits[0].Value, `"double"`)
 	}
