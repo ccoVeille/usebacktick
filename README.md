@@ -110,7 +110,7 @@ It does not suggest conversions when:
 go install github.com/ccoveille/usebacktick@latest
 ```
 
-The project currently requires Go 1.26.4 or newer.
+The project currently requires Go 1.26.0 or newer.
 
 ## Usage
 
