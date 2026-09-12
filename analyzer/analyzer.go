@@ -131,7 +131,7 @@ func useBackticks(litValue string) (string, bool) {
 		return "", false
 	}
 
-	for _, r := range []string{`\u`, `\U`, `\x`, `\X`} {
+	for _, r := range []string{`\u`, `\U`, `\x`} {
 		if strings.Contains(litValue, r) && !strings.Contains(unquoted, r) {
 			// if someone used an escape sequence like \u, \U, \x or \X in the original string literal
 			// and we no longer have it in the unquoted string
