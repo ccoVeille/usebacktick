@@ -19,8 +19,9 @@ var Analyzer = &analysis.Analyzer{
 
 	Run: func(pass *analysis.Pass) (any, error) {
 		for _, file := range pass.Files {
+			regexpPackageName, regexpPackageFound := regexpPackageName(file)
 			ast.Inspect(file, func(n ast.Node) bool {
-				if isRegexpCompileCall(pass, n) {
+				if regexpPackageFound && isRegexpCompileCall(regexpPackageName, n) {
 					// ignore all arguments to the regexp function.
 					return false
 				}
@@ -60,7 +61,37 @@ var Analyzer = &analysis.Analyzer{
 	},
 }
 
-func isRegexpCompileCall(pass *analysis.Pass, n ast.Node) bool {
+// regexpPackageName iterates on all imported packages by the file
+// and returns the name of the regexp package if it is imported, and true.
+func regexpPackageName(file *ast.File) (string, bool) {
+	for _, imp := range file.Imports {
+		path, err := strconv.Unquote(imp.Path.Value)
+		if err != nil {
+			continue
+		}
+
+		if path != "regexp" {
+			continue
+		}
+
+		if imp.Name == nil {
+			return "regexp", true
+		}
+
+		switch imp.Name.Name {
+		case "_", ".":
+			// ignore dot and blank imports
+			return "", false
+		default:
+			// return the alias name for the regexp package
+			return imp.Name.Name, true
+		}
+	}
+
+	return "", false
+}
+
+func isRegexpCompileCall(regexpPackageName string, n ast.Node) bool {
 	call, ok := n.(*ast.CallExpr)
 	if !ok {
 		return false
@@ -74,19 +105,21 @@ func isRegexpCompileCall(pass *analysis.Pass, n ast.Node) bool {
 		return false
 	}
 
-	obj := pass.TypesInfo.ObjectOf(sel.Sel)
-	if obj == nil {
-		return false
-	}
-	pkg := obj.Pkg()
-	if pkg == nil {
-		return false
-	}
-	if pkg.Path() != "regexp" {
+	pkg, ok := sel.X.(*ast.Ident)
+	if !ok {
 		return false
 	}
 
-	return obj.Name() == "Compile" || obj.Name() == "MustCompile"
+	if pkg.Obj != nil {
+		// this is not a package, it could be a variable with the same name as the package
+		return false
+	}
+
+	if pkg.Name != regexpPackageName {
+		return false
+	}
+
+	return sel.Sel.Name == "Compile" || sel.Sel.Name == "MustCompile"
 }
 
 func quotedStringLiteralValue(n ast.Node) (*ast.BasicLit, bool) {
