@@ -45,6 +45,7 @@ linters:
     - loggercheck
     - mirror
     - misspell
+    - nolintlint
     - revive
     - staticcheck
     - thelper
@@ -54,6 +55,9 @@ linters:
     - wsl_v5
 
   settings:
+    nolintlint:
+      require-explanation: true
+      require-specific: true
     revive:
       enable-all-rules: true
       rules:
