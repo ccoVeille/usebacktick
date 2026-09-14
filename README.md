@@ -158,7 +158,7 @@ version: v2.13.2
 plugins:
   - module: 'github.com/ccoveille/usebacktick'
     import: 'github.com/ccoveille/usebacktick/golangci'
-    version: v0.2.0
+    version: 'latest'
 ```
 
 Update `version` (the `golangci-lint` version) and the plugin's `version` to the latest
@@ -203,6 +203,9 @@ Use `-fix` to fix detected issues.
 ```console
 ./custom-gcl lint --enable-only usebacktick -fix ./...
 ```
+
+Check in the [example directory](example) the minimal configuration
+to enable the `usebacktick` linter.
 
 ## Development
 
