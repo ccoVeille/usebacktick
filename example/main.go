@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	const jsonData = "{ \"name\": \"John Doe\", \"john.doe@example.com\" }"
+	const jsonData = "{ \"name\": \"John Doe\", \"email\": \"john.doe@example.com\" }"
 
 	_, _ = fmt.Fprintln(os.Stderr, jsonData)
 }

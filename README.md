@@ -204,7 +204,7 @@ Use `-fix` to fix detected issues.
 ./custom-gcl lint --enable-only usebacktick -fix ./...
 ```
 
-Check in the [example directory](example) the minimal configuration
+Check the [example directory](example) the minimal configuration
 to enable the `usebacktick` linter.
 
 ## Development
