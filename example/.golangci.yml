@@ -1,0 +1,8 @@
+version: "2"
+linters:
+  settings:
+    custom:
+      usebacktick:
+        type: module
+        description: Linter for using backticks instead of double quotes where possible
+        original-url: https://github.com/ccoVeille/usebacktick
