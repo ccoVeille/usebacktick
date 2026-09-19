@@ -9,6 +9,8 @@ import (
 	"strings"
 
 	"golang.org/x/tools/go/analysis"
+
+	"github.com/ccoveille/usebacktick/internal/astutil"
 )
 
 // New defines the linter configuration for the go/analysis framework.
@@ -22,9 +24,10 @@ func New(settings any) *analysis.Analyzer {
 
 		Run: func(pass *analysis.Pass) (any, error) {
 			for _, file := range pass.Files {
+				regexpPackage := astutil.FindImport(file, "regexp")
 				ast.Inspect(file, func(n ast.Node) bool {
-					if isRegexpCompileCall(pass, n) {
-						// ignore all arguments to the regexp function.
+					if regexpPackage.IsCallTo(n, "Compile", "MustCompile") {
+						// these are already reported by staticcheck S1007
 						return false
 					}
 
@@ -64,38 +67,6 @@ func New(settings any) *analysis.Analyzer {
 			return nil, nil
 		},
 	}
-}
-
-func isRegexpCompileCall(pass *analysis.Pass, n ast.Node) bool {
-	call, ok := n.(*ast.CallExpr)
-	if !ok {
-		return false
-	}
-
-	sel, ok := call.Fun.(*ast.SelectorExpr)
-	if !ok {
-		return false
-	}
-
-	if sel.Sel == nil { // This should not happen, unless the language spec changes, but let's be safe.
-		return false
-	}
-
-	obj := pass.TypesInfo.ObjectOf(sel.Sel)
-	if obj == nil {
-		return false
-	}
-
-	pkg := obj.Pkg()
-	if pkg == nil {
-		return false
-	}
-
-	if pkg.Path() != "regexp" {
-		return false
-	}
-
-	return obj.Name() == "Compile" || obj.Name() == "MustCompile"
 }
 
 func quotedStringLiteralValue(n ast.Node) (*ast.BasicLit, bool) {
