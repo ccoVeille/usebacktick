@@ -2,7 +2,6 @@ package a
 
 import (
 	"encoding/json"
-	"regexp"
 	"strings"
 )
 
@@ -47,11 +46,4 @@ func notReadable() {
 	_ = "foo\u1F601bar"
 	_ = "foo\x41bar"
 	_ = "foo\u1F601bar"
-}
-
-// regexpCompile is already reported with staticcheck
-// https://staticcheck.dev/docs/checks/#S1007
-func regexpCompile() {
-	_, _ = regexp.Compile("foo\\d+bar")
-	_ = regexp.MustCompile("foo\\d+bar")
 }
