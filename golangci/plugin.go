@@ -36,5 +36,5 @@ func (p usebacktickPlugin) BuildAnalyzers() ([]*analysis.Analyzer, error) {
 //
 // This method is part of the [register.LinterPlugin].
 func (usebacktickPlugin) GetLoadMode() string {
-	return register.LoadModeTypesInfo
+	return register.LoadModeSyntax
 }
